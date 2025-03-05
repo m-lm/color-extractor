@@ -3,11 +3,6 @@ body {
     font-size: 16px;
 }
 
-p {
-    display: flex;
-    justify-content: center;
-}
-
 .container {
     display: flex;
     flex-direction: column;
@@ -36,6 +31,16 @@ p {
     color: white;
 }
 
+.tooltip {
+    position: absolute;
+    font-size: 12px;
+    color: white;
+    background-color: black;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: opacity 0.2s ease;
+}
+
 #header {
     display: flex;
     justify-content: center;
@@ -62,12 +67,12 @@ p {
     flex-direction: row;
     margin: 24px;
     gap: 12px;
-    justify-content: flex-start;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 #colorsChildren {
+    cursor: pointer;
     border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 4px 6px, rgba(0, 0, 0, 0.1) 0px 5px 7px;
 }

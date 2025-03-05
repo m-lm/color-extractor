@@ -1,19 +1,20 @@
 function displayColors(colors, k=5) {
     // Display colors after user generation
-    const numSamples = Math.min(k, colors.length);
     const display = document.getElementById("colors"); 
-    if (display.childElementCount != numSamples) {
+    if (display.childElementCount != k) {
         clearColors();
     }
     if (display.childElementCount <= 0) {
-        for (let i = 0; i < numSamples; i++) {
+        for (let i = 0; i < k; i++) {
+            const color = colors[i][0];
             const colorBox = document.createElement("div");
-            colorBox.id = "colorsChildren";
-            colorBox.style.backgroundColor = colors[i][0];
             display.style.opacity = 100;
+            colorBox.id = "colorsChildren";
+            colorBox.style.backgroundColor = color;
             colorBox.style.width = "24px";
             colorBox.style.height = "24px";
             display.appendChild(colorBox);
+            colorBox.addEventListener("click", () => clipboardCopy(color, colorBox));
         }
     }
 }
@@ -24,6 +25,19 @@ function clearColors() {
     while (colors.firstChild) {
         colors.removeChild(colors.firstChild);
     }
+}
+
+function clipboardCopy(color, colorBox) {
+    // Copy clicked colors from displayed color boxes
+    navigator.clipboard.writeText(color);
+    const tooltip = document.createElement("div");
+    tooltip.textContent = "Color copied!";
+    tooltip.classList.add("tooltip");
+    tooltip.style.top = `${colorBox.offsetTop - 30}px`;
+    tooltip.style.left = `${colorBox.offsetLeft + colorBox.offsetWidth / 2 - tooltip.offsetWidth / 2}px`;
+    document.body.appendChild(tooltip);
+    setTimeout(() => {tooltip.style.opacity = 0;}, 1000);
+    tooltip.addEventListener("transitionend", () => {tooltip.remove();});
 }
 
 function kMeans(image, k=5) {
@@ -38,14 +52,13 @@ function medianCut(image, k=5) {
 
 function freqAnalysis(image, k=5) {
     // Color extraction using color frequencies
-    k = Math.min(k, 10);
     const pixels = image.data;
     const colors = {};
     const stepConstant = 256 / k;
     const quantize = (value, step=stepConstant) => Math.floor(value / step) * step;
 
     for (let i = 0; i < pixels.length; i += 4) {
-        let r = quantize(pixels[i]), g = quantize(pixels[i+1]), b = quantize(pixels[i+2]);
+        let r = quantize(pixels[i]).toFixed(2), g = quantize(pixels[i+1]).toFixed(2), b = quantize(pixels[i+2]).toFixed(2);
         const key = `rgb(${r}, ${g}, ${b})`;
         if (colors[key]) {
             colors[key]++;
@@ -67,8 +80,7 @@ function generateColors() {
     imgObject.onload = () => {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        canvas.width = imgObject.width;
-        canvas.height = imgObject.height;
+        canvas.width = imgObject.width, canvas.height = imgObject.height;
         ctx.drawImage(imgObject, 0, 0);
         const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
         if (display.src) {
@@ -101,7 +113,6 @@ function displayImage(event) {
         const reader = new FileReader();
         reader.onload = (e) => {
             display.src = e.target.result;
-            display.style.display = "block";
             display.style.opacity = 100;
         };
         reader.readAsDataURL(file);
