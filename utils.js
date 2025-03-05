@@ -21,18 +21,24 @@ function freqAnalysis() {
 function generateColors() {
     // Function that calls methods for color extraction accordingly
     const choice = document.getElementById("method-choice").value;
-    switch (choice) {
-        case "K-Means":
-            kMeans();
-            break;
-        case "Median Cut":
-            medianCut();
-            break;
-        case "Frequency":
-            freqAnalysis();
-            break;
-        default:
-            kMeans();
+    const display = document.getElementById("img-display");
+    if (display.src) {
+        switch (choice) {
+            case "K-Means":
+                kMeans();
+                break;
+            case "Median Cut":
+                medianCut();
+                break;
+            case "Frequency":
+                freqAnalysis();
+                break;
+            default:
+                kMeans();
+        }
+    }
+    else {
+        console.log("Please upload an image first")
     }
 }
 
