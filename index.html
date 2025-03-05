@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Micah McCollum</title>
+        <title>color-extract</title>
         <link rel = "stylesheet" type = "text/css" href = "main.css">
         <meta charset = "UTF-8">
         <meta name = "viewport" content = "width = device-width, initial-scale = 1">
     </head>
     <body>
-    <div id="header">color-extract</div>
-    <div class="container">
-        <img id="img-display">
-        <label id="upload-label" class="btn" for="img-upload">Upload image</label>
-        <input id="img-upload" type="file" accept="image/*">
-        <select class="dropdown">
-            <option value="K-Means">K-Means</option>
-            <option value="Median Cut">Median Cut</option>
-            <option value="Frequency">Frequency</option>
-        </select>
-        <button id="generate" class="btn">Generate</button>
-    </div>
+        <div id="header">color-extract</div>
+        <div class="container">
+            <div id="img-colors-box">
+                <img id="img-display">
+                <div id="colors"></div>
+            </div>
+            <label id="upload-label" class="btn" for="img-upload">Upload image</label>
+            <input id="img-upload" type="file" accept="image/*">
+            <select id="method-choice" class="dropdown">
+                <option value="K-Means">K-Means</option>
+                <option value="Median Cut">Median Cut</option>
+                <option value="Frequency">Frequency</option>
+            </select>
+            <button id="generate" class="btn">Generate</button>
+        </div>
     <script src = "utils.js"></script>
     </body>
 </html>

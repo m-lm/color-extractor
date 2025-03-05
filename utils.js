@@ -1,5 +1,34 @@
+function displayColors() {
+    console.log("Display Colors");
+}
+
+function kMeans(k=3) {
+    console.log("K Means Clustering");
+}
+
+function medianCut() {
+    console.log("Median Cut");
+}
+
+function freqAnalysis() {
+    console.log("Frequency Analysis");
+}
+
 function generateColors() {
-    console.log("Generated");
+    const choice = document.getElementById("method-choice").value;
+    switch (choice) {
+        case "K-Means":
+            kMeans();
+            break;
+        case "Median Cut":
+            medianCut();
+            break;
+        case "Frequency":
+            freqAnalysis();
+            break;
+        default:
+            kMeans();
+    }
 }
 
 function displayImage(event) {
