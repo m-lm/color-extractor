@@ -11,8 +11,6 @@ function displayColors(colors, k=5) {
             display.style.opacity = 100;
             colorBox.id = "colorsChildren";
             colorBox.style.backgroundColor = color;
-            colorBox.style.width = "24px";
-            colorBox.style.height = "24px";
             display.appendChild(colorBox);
             colorBox.addEventListener("click", () => clipboardCopy(color, colorBox));
         }
@@ -55,10 +53,10 @@ function freqAnalysis(image, k=5) {
     const pixels = image.data;
     const colors = {};
     const stepConstant = 256 / k;
-    const quantize = (value, step=stepConstant) => Math.floor(value / step) * step;
+    const quantize = (value, step=stepConstant) => Math.round(Math.floor(value / step) * step);
 
     for (let i = 0; i < pixels.length; i += 4) {
-        let r = quantize(pixels[i]).toFixed(2), g = quantize(pixels[i+1]).toFixed(2), b = quantize(pixels[i+2]).toFixed(2);
+        let r = quantize(pixels[i]), g = quantize(pixels[i+1]), b = quantize(pixels[i+2]);
         const key = `rgb(${r}, ${g}, ${b})`;
         if (colors[key]) {
             colors[key]++;
@@ -76,6 +74,12 @@ function generateColors() {
     const choice = document.getElementById("method-choice").value;
     const k = parseInt(document.getElementById("quantity").value);
     const display = document.getElementById("img-display");
+
+    if (!display.src || display.src === "") {
+        console.log("Please upload an image first");
+        return;
+    }
+
     const imgObject = new Image();
     imgObject.onload = () => {
         const canvas = document.createElement("canvas");
@@ -83,23 +87,18 @@ function generateColors() {
         canvas.width = imgObject.width, canvas.height = imgObject.height;
         ctx.drawImage(imgObject, 0, 0);
         const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        if (display.src) {
-            switch (choice) {
-                case "K-Means":
-                    kMeans(img, k);
-                    break;
-                case "Median Cut":
-                    medianCut(img, k);
-                    break;
-                case "Frequency":
-                    freqAnalysis(img, k);
-                    break;
-                default:
-                    console.log("Default case");
-            }
-        }
-        else {
-            console.log("Please upload an image first")
+        switch (choice) {
+            case "K-Means":
+                kMeans(img, k);
+                break;
+            case "Median Cut":
+                medianCut(img, k);
+                break;
+            case "Frequency":
+                freqAnalysis(img, k);
+                break;
+            default:
+                console.log("Switch error");
         }
     }
     imgObject.src = display.src;
@@ -114,10 +113,11 @@ function displayImage(event) {
         reader.onload = (e) => {
             display.src = e.target.result;
             display.style.opacity = 100;
+            clearColors();
+            generateColors();
         };
         reader.readAsDataURL(file);
     }
-    clearColors();
 }
 
 function checkQuantity() {
@@ -132,5 +132,6 @@ function checkQuantity() {
 }
 
 document.getElementById("img-upload").addEventListener("change", displayImage);
-document.getElementById("generate").addEventListener("click", generateColors);
 document.getElementById("quantity").addEventListener("input", checkQuantity);
+document.getElementById("quantity").addEventListener("change", generateColors);
+document.getElementById("method-choice").addEventListener("change", generateColors);
